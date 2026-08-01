@@ -1,0 +1,118 @@
+[agent]
+# Stable deployment identifier. Defaults to "gargoyle-<hostname>".
+id = "gargoyle-lab-01"
+queue_capacity = 4096
+
+[agent.labels]
+environment = "lab"
+role = "sensor"
+platform = "linux"
+
+[collectors.process]
+enabled = true
+interval_ms = 1000
+emit_existing = false
+emit_stops = true
+# Command lines can contain credentials or tokens. Enable deliberately.
+capture_command_line = false
+max_command_line_bytes = 4096
+max_processes = 65536
+
+[collectors.network]
+enabled = true
+interval_ms = 2000
+emit_existing = false
+emit_closed = true
+include_loopback = false
+correlate_processes = true
+fingerprint_processes = true
+max_sockets = 262144
+max_fds_per_process = 65536
+
+[collectors.filesystem]
+enabled = true
+interval_ms = 3000
+emit_existing = false
+paths = [
+  "/etc/passwd",
+  "/etc/group",
+  "/etc/shadow",
+  "/etc/gshadow",
+  "/etc/sudoers",
+  "/etc/sudoers.d",
+  "/etc/ssh",
+  "/root/.ssh",
+]
+discover_home_ssh_keys = true
+home_roots = ["/home"]
+max_depth = 4
+max_files = 10000
+
+[collectors.identity]
+enabled = true
+interval_ms = 5000
+emit_existing = false
+max_accounts = 10000
+linux_passwd_path = "/etc/passwd"
+linux_group_path = "/etc/group"
+
+[collectors.auth]
+enabled = true
+interval_ms = 2000
+emit_existing = false
+linux_log_paths = ["/var/log/auth.log", "/var/log/secure"]
+max_read_bytes = 1048576
+max_events_per_poll = 1024
+windows_event_ids = [4624, 4625, 4648, 4672, 4688]
+
+[collectors.fingerprint]
+enabled = true
+hash_executables = true
+windows_authenticode = false
+max_file_bytes = 536870912
+max_cache_entries = 4096
+
+[collectors.kernel]
+enabled = true
+interval_ms = 5000
+emit_existing = false
+
+[collectors.health]
+enabled = true
+interval_ms = 60000
+
+[output]
+stdout = true
+# file = "/var/log/gargoyle/events.jsonl"
+# unix_datagram = "/run/gargoyle/events.sock"
+flush_each_event = true
+
+# Rules are evaluated in order. Every matching rule may add labels or alter
+# severity. A matching drop rule stops evaluation and discards the event.
+
+[[policy.rules]]
+name = "escalate-new-ssh-listeners"
+enabled = true
+collector = "network"
+kind = "network.listen"
+local_port = 22
+action = "set_severity"
+severity = "high"
+
+[policy.rules.add_labels]
+control = "remote-access"
+
+[[policy.rules]]
+name = "escalate-failed-root-logons"
+enabled = true
+collector = "auth"
+auth_account = "root"
+auth_outcome = "failure"
+action = "set_severity"
+severity = "high"
+
+[[policy.rules]]
+name = "drop-heartbeats-from-json-file"
+enabled = false
+kind = "agent.heartbeat"
+action = "drop"

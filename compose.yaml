@@ -1,0 +1,24 @@
+services:
+  gargoyle:
+    build: .
+    container_name: gargoyle
+    restart: unless-stopped
+    pid: host
+    network_mode: host
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - SYS_PTRACE
+      - DAC_READ_SEARCH
+    volumes:
+      - ./config/gargoyle.container.toml:/etc/gargoyle/gargoyle.toml:ro
+      - /etc:/host/etc:ro
+      - /home:/host/home:ro
+      - /var/log:/host/var/log:ro
+      - /root/.ssh:/host/root/.ssh:ro
+      - /sys:/sys:ro
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m

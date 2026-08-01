@@ -1,0 +1,423 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gargoyle.local/schema/event-v2.json",
+  "title": "GARGOYLE Event v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "sequence",
+    "timestamp",
+    "agent",
+    "collector",
+    "kind",
+    "severity",
+    "message"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "gargoyle.event/v2"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "agent": {
+      "$ref": "#/$defs/agent"
+    },
+    "collector": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "debug",
+        "info",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "process": {
+      "$ref": "#/$defs/process"
+    },
+    "network": {
+      "$ref": "#/$defs/network"
+    },
+    "file": {
+      "$ref": "#/$defs/file"
+    },
+    "identity": {
+      "$ref": "#/$defs/identity"
+    },
+    "kernel": {
+      "$ref": "#/$defs/kernel"
+    },
+    "auth": {
+      "$ref": "#/$defs/auth"
+    },
+    "labels": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "data": {}
+  },
+  "$defs": {
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "hostname",
+        "version",
+        "os",
+        "arch"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "os": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        }
+      }
+    },
+    "fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "signature_status": {
+          "type": "string"
+        },
+        "signer_subject": {
+          "type": "string"
+        },
+        "signer_thumbprint": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{40}$"
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pid"
+      ],
+      "properties": {
+        "pid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "ppid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "uid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "gid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "username": {
+          "type": "string"
+        },
+        "session_id": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "name": {
+          "type": "string"
+        },
+        "executable": {
+          "type": "string"
+        },
+        "command_line": {
+          "type": "string"
+        },
+        "cgroup": {
+          "type": "string"
+        },
+        "start_key": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "$ref": "#/$defs/fingerprint"
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol",
+        "local_address",
+        "local_port",
+        "remote_address",
+        "remote_port",
+        "state"
+      ],
+      "properties": {
+        "protocol": {
+          "type": "string"
+        },
+        "local_address": {
+          "type": "string"
+        },
+        "local_port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "remote_address": {
+          "type": "string"
+        },
+        "remote_port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "state": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "inode": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "owning_pid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      }
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "operation"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "mode": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "uid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "gid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "readonly": {
+          "type": "boolean"
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "object_type",
+        "operation",
+        "name"
+      ],
+      "properties": {
+        "object_type": {
+          "enum": [
+            "user",
+            "group"
+          ]
+        },
+        "operation": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numeric_id": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "sid": {
+          "type": "string"
+        },
+        "primary_group_id": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "domain": {
+          "type": "string"
+        },
+        "home": {
+          "type": "string"
+        },
+        "shell": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "kernel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "module": {
+          "type": "string"
+        },
+        "taint": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lockdown": {
+          "type": "string"
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "mechanism"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "success",
+            "failure",
+            "unknown"
+          ]
+        },
+        "mechanism": {
+          "type": "string"
+        },
+        "account": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "logon_type": {
+          "type": "string"
+        },
+        "source_address": {
+          "type": "string"
+        },
+        "source_port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "workstation": {
+          "type": "string"
+        },
+        "authentication_package": {
+          "type": "string"
+        },
+        "logon_id": {
+          "type": "string"
+        },
+        "failure_reason": {
+          "type": "string"
+        },
+        "event_record_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "privileges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

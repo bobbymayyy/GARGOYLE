@@ -1,0 +1,11 @@
+/var/log/gargoyle/*.jsonl {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    su root root
+    create 0600 root root
+}

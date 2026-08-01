@@ -1,0 +1,41 @@
+#include <tunables/global>
+
+/usr/local/bin/gargoyle flags=(attach_disconnected,mediate_deleted) {
+  #include <abstractions/base>
+
+  /usr/local/bin/gargoyle mr,
+  /etc/gargoyle/gargoyle.toml r,
+  /etc/hostname r,
+
+  /proc/ r,
+  /proc/[0-9]*/ r,
+  /proc/[0-9]*/{stat,status,cmdline,cgroup,sessionid} r,
+  /proc/[0-9]*/fd/ r,
+  /proc/[0-9]*/fd/[0-9]* r,
+  /proc/[0-9]*/exe r,
+  /proc/modules r,
+  /proc/net/{tcp,tcp6,udp,udp6} r,
+  /proc/sys/kernel/tainted r,
+  /sys/kernel/security/lockdown r,
+
+  /etc/{passwd,group,shadow,gshadow,sudoers} r,
+  /etc/sudoers.d/** r,
+  /etc/ssh/** r,
+  /var/log/{auth.log,secure} r,
+
+  # Common executable roots used by bounded SHA-256 enrichment.
+  /{bin,sbin}/** r,
+  /usr/** r,
+  /opt/** r,
+  /snap/** r,
+  /root/.ssh/** r,
+  /home/*/.ssh/** r,
+
+  /var/log/gargoyle/ rw,
+  /var/log/gargoyle/** rw,
+  /run/gargoyle/ rw,
+  /run/gargoyle/** rw,
+
+  network unix dgram,
+  signal (receive) peer=unconfined,
+}
