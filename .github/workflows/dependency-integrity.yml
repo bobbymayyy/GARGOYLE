@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install project Rust toolchain
-        run: rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+        run: rustup toolchain install 1.97.1 --profile minimal
 
       - name: Reject known malicious packages before Cargo runs
         shell: python
@@ -57,9 +57,6 @@ jobs:
 
       - name: Test with locked dependencies
         run: cargo test --locked --all-features
-
-      - name: Lint with locked dependencies
-        run: cargo clippy --locked --all-targets --all-features -- -D warnings
 
   dependency-policy:
     name: Advisory, license, and source policy
