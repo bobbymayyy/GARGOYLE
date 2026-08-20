@@ -1,9 +1,9 @@
 FROM rust:1.97.1-bookworm AS builder
 WORKDIR /src
-COPY Cargo.toml rust-toolchain.toml ./
+COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY src ./src
 COPY schemas ./schemas
-RUN cargo build --release
+RUN cargo build --release --locked
 
 FROM debian:trixie-slim
 RUN useradd --system --uid 991 --no-create-home --shell /usr/sbin/nologin gargoyle
