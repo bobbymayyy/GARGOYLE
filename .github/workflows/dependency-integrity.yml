@@ -69,7 +69,7 @@ jobs:
         run: rustup toolchain install 1.97.1 --profile minimal
 
       - name: Install pinned cargo-deny
-        run: cargo +1.97.1 install cargo-deny --version 0.18.4 --locked
+        run: cargo +1.97.1 install cargo-deny --version 0.20.2 --locked
 
       - name: Enforce dependency policy
         run: cargo +1.97.1 deny check advisories bans licenses sources
