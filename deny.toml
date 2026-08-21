@@ -21,6 +21,12 @@ allow = [
 multiple-versions = "warn"
 wildcards = "deny"
 highlight = "all"
+deny = [
+  { name = "arrayref", version = "=0.3.10" },
+  { name = "append-only-vec", version = "=0.1.9" },
+  { name = "proc-macro1" },
+  { name = "proc-macro-en" },
+]
 
 [sources]
 unknown-registry = "deny"

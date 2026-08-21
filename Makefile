@@ -3,22 +3,22 @@ SHELL := /bin/bash
 .PHONY: build release fmt lint test doc audit deny machete coverage check smoke benchmark clean
 
 build:
-	cargo build
+	cargo build --locked
 
 release:
-	cargo build --release
+	cargo build --release --locked
 
 fmt:
 	cargo fmt --all --check
 
 lint:
-	cargo clippy --all-targets --all-features -- -D warnings
+	cargo clippy --locked --all-targets --all-features -- -D warnings
 
 test:
-	cargo test --all-features
+	cargo test --locked --all-features
 
 doc:
-	RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
+	RUSTDOCFLAGS="-D warnings" cargo doc --locked --no-deps --all-features
 
 audit:
 	cargo audit
