@@ -252,7 +252,7 @@ fn socket_owners(
 ) -> Result<HashMap<u64, u32>> {
     const MAX_PROCESSES_SCANNED: usize = 1_000_000;
 
-    let mut owners = HashMap::new();
+    let mut owners: HashMap<u64, u32> = HashMap::new();
     let mut processes_scanned = 0_usize;
     for entry in fs::read_dir("/proc")? {
         let entry = match entry {
